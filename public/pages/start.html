@@ -1,0 +1,13 @@
+<h1>ReleaseBuilder</h1>
+<p>Добро пожаловать в систему автоматической сборки релизов ReleaseBuilder. Для начала работы необходимо добавить или выбрать существующий проект.</p>
+
+<div class="projects-list" ng-if="projects.length">
+    <p><strong>Существующие проекты</strong></p>
+    <div class="project-item" ng-repeat="project in projects">
+        <a href="#/project/{{project.id}}" ng-click="selectProject(project.id)">{{ project.name }}</a>
+    </div>
+</div>
+
+<br />
+
+<p><button class="btn btn-default" ng-click="changeView('/new-project')">Создать первый проект!</button></p>
