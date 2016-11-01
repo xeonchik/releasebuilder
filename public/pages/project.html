@@ -1,9 +1,9 @@
-<h1>Проект: {{ project.name }}</h1>
+<h1>Project: {{ project.name }}</h1>
 
-<div class="repository-list" ng-if="project.repositories.length">
-  <h4>Репозитории <a style="font-size: 0.75em; margin-left: 20px;" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить репозиторий</a></h4>
+<div class="repository-list">
+  <h4>Repositories <a style="font-size: 0.75em; margin-left: 20px;" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a></h4>
 
-  <div class="common-actions">
+  <div class="common-actions" ng-if="project.repositories.length">
     <div class="btn-group">
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-download"></span> Fetch all</button>
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Pull all</button>
@@ -30,19 +30,19 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Добавление репозитория</h4>
+        <h4 class="modal-title" id="myModalLabel">Repository add</h4>
       </div>
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="gitAddress">Адрес git-репозитория:</label>
+            <label for="gitAddress">Git repository URL</label>
             <input type="text" class="form-control" id="gitAddress" name="gitAddress" ng-model="repo.url" required />
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-        <button type="submit" class="btn btn-primary" ng-click="addRepo(repo)">Сохранить</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" ng-click="addRepo(repo)">Save</button>
       </div>
     </div>
   </div>
