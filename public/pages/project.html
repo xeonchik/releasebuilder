@@ -5,8 +5,8 @@
 
   <div class="common-actions" ng-if="project.repositories.length">
     <div class="btn-group">
-      <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-download"></span> Fetch all</button>
-      <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-save"></span> Pull all</button>
+      <button type="button" class="btn btn-default" ng-click="fetchAll()" ><span class="glyphicon glyphicon-download"></span> Fetch all</button>
+      <button type="button" class="btn btn-default" ng-click="pullAll()"><span class="glyphicon glyphicon-save"></span> Pull all</button>
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-open"></span> Push all</button>
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span> Checkout branch</button>
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create branch</button>
@@ -16,12 +16,11 @@
   <div class="repository-item" ng-repeat="repository in project.repositories">
     <p class="r-title">{{ repository.name }}</p>
     <div class="r-descr">
-    <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>author here</span> <span>{{ repository.current_commit }} {{ repository.last_commit_message }}</span></p>
+    <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>author here</span> <span>{{ repository.current_commit }}</span> <span>{{ repository.last_commit_message }}</span></p>
     </div>
   </div>
 </div>
-
-  <br/>
+<br/>
 
 
 <!-- Modal -->

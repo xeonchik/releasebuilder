@@ -69,6 +69,18 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
         });
     };
 
+    $scope.fetchAll = function() {
+        $http.get('/api/repository/fetch', { params: { projectId: project.id} }).success(function (data) {
+
+        });
+    };
+
+    $scope.pullAll = function() {
+        $http.get('/api/repository/pull', { params: { projectId: project.id} }).success(function (data) {
+
+        });
+    };
+
     angular.forEach(project.repositories, function (item, key) {
         $http.get('/api/repository/info', {params:{projectId: project.id, repositoryName: item.name}}).success(function (data) {
             item.current_commit = data.commit;
