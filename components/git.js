@@ -1,29 +1,27 @@
+
+'use strict';
+
 const spawn = require('child_process').spawn;
 const exec = require('child_process').exec;
 const fs = require('fs');
-
-var txt_log = [];
+const logger = require('./logger.js');
 
 var git = {
-
-    read_log: function () {
-        return txt_log.join("<br/>\n");
-    },
 
     fetch: function (repo, resultCallback) {
         var cwd = repo.path;
         var cmd = 'git fetch';
 
-        txt_log.push(cmd);
+        logger.log(cmd);
 
         exec(cmd, {cwd: cwd}, function (error, stdout, stderr) {
             if (error) {
-                txt_log.push(error.stack);
+                //txt_log.push(error.stack);
                 resultCallback(false, error);
                 return;
             }
 
-            txt_log.push(stdout);
+            //txt_log.push(stdout);
             resultCallback(true, stdout);
         });
     },
@@ -63,14 +61,15 @@ var git = {
     },
 
     _executeCmd: function(cmd, options, callback) {
-        txt_log.push(cmd);
+        logger.log(cmd);
+
         exec(cmd, options, function (error, stdout, stderr) {
             if (error) {
-                txt_log.push(error.stack);
+                //txt_log.push(error.stack);
                 callback(false, error);
                 return;
             }
-            txt_log.push(stdout);
+            //txt_log.push(stdout);
             callback(true, stdout);
         });
     }

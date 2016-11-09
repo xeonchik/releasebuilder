@@ -108,3 +108,6 @@ myApp.controller('RepositoriesController', ['$scope', '$routeParams', 'ProjectSe
 
 }]);
 
+myApp.controller('ConsoleController', ['$scope', function($scope) {
+    $scope.test = 12323;
+}]);

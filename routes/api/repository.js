@@ -5,6 +5,7 @@ const spawn = require('child_process').spawn;
 const fs = require('fs');
 var projects = require('../../components/global');
 const git = require('../../components/git');
+const logger = require('../../components/logger');
 
 /* GET home page. */
 router.post('/add', function(req, res, next) {
@@ -74,7 +75,7 @@ router.post('/add', function(req, res, next) {
 });
 
 router.get('/log', function (req, res) {
-  res.send(git.read_log());
+    res.send(logger.toString());
 });
 
 router.get('/fetch', function(req, res, next) {
