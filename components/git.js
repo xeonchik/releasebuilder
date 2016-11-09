@@ -4,7 +4,33 @@
 const spawn = require('child_process').spawn;
 const exec = require('child_process').exec;
 const fs = require('fs');
-const logger = require('./logger.js');
+
+var logger = {
+    _buffer: [],
+
+    log: function (msg, repo) {
+        var entry = {
+            msg: msg,
+            date_time: new Date(),
+            level: 'info',
+            repo: repo
+        };
+
+        this._buffer.push(entry);
+    },
+
+    getEntries: function () {
+        return this._buffer;
+    },
+
+    toString: function () {
+        var output = '';
+        this._buffer.forEach(function(item) {
+            output += item.date_time.toLocaleTimeString() + '.' + item.date_time.getMilliseconds() + ': ' + item.msg + "\n";
+        });
+        return output;
+    }
+};
 
 var git = {
 
@@ -12,16 +38,13 @@ var git = {
         var cwd = repo.path;
         var cmd = 'git fetch';
 
-        logger.log(cmd);
+        logger.log(cmd, repo.name);
 
         exec(cmd, {cwd: cwd}, function (error, stdout, stderr) {
             if (error) {
-                //txt_log.push(error.stack);
                 resultCallback(false, error);
                 return;
             }
-
-            //txt_log.push(stdout);
             resultCallback(true, stdout);
         });
     },
@@ -58,6 +81,10 @@ var git = {
 
             callback(true, info);
         });
+    },
+
+    getLogger: function() {
+        return logger;
     },
 
     _executeCmd: function(cmd, options, callback) {

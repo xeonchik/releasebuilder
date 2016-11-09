@@ -2,7 +2,6 @@
 
 // Declare app level module which depends on views, and components
 var myApp = angular.module('myApp',['ngRoute', 'ngAnimate']);
-var projectId = null;
 
 myApp.config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
   //$locationProvider.html5Mode(true);
@@ -21,22 +20,6 @@ myApp.config(['$locationProvider', '$routeProvider', function ($locationProvider
       })
       .otherwise('/')
 }]);
-
-myApp.controller('MainController', ['$scope', '$location', '$http', 'ProjectService', function($scope, $location, $http, ProjectService) {
-  $scope.changeView = function(view){
-    $location.path(view);
-  };
-
-  $http.get('/api/project/list').success(function (data) {
-      $scope.projects = data;
-      ProjectService.projects = data;
-  });
-
-    $scope.selectProject = function (selected) {
-      ProjectService.select = selected;
-    };
-}]);
-
 
 myApp.controller('NewProjectController', ['$scope', '$http', '$location', function($scope, $http, $location) {
     $scope.project = {};
@@ -111,3 +94,12 @@ myApp.controller('RepositoriesController', ['$scope', '$routeParams', 'ProjectSe
 myApp.controller('ConsoleController', ['$scope', function($scope) {
     $scope.test = 12323;
 }]);
+
+myApp.component('consoleComponent', {
+    templateUrl: 'components/templates/console.html',
+    controller: ['$scope', '$http', function ($scope, $http) {
+        $http.get('/api/repository/log').success(function (data) {
+            $scope.entries = data;
+        });
+    }]
+});
