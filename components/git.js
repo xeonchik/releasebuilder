@@ -56,10 +56,14 @@ var git = {
             cmd += ' origin ' + options.branch + ' --progress';
         }
 
+        logger.log(cmd, repo.name);
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
 
     info: function (repo, options, callback) {
+
+        logger.log('git branch -v', repo.name);
+
         this._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
             if(!result) {
                 callback(result, output);
@@ -88,8 +92,6 @@ var git = {
     },
 
     _executeCmd: function(cmd, options, callback) {
-        logger.log(cmd);
-
         exec(cmd, options, function (error, stdout, stderr) {
             if (error) {
                 //txt_log.push(error.stack);

@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-var myApp = angular.module('myApp',['ngRoute', 'ngAnimate']);
+var myApp = angular.module('myApp',['ngRoute']);
 
 myApp.config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
   //$locationProvider.html5Mode(true);
@@ -98,8 +98,10 @@ myApp.controller('ConsoleController', ['$scope', function($scope) {
 myApp.component('consoleComponent', {
     templateUrl: 'components/templates/console.html',
     controller: ['$scope', '$http', function ($scope, $http) {
-        $http.get('/api/repository/log').success(function (data) {
-            $scope.entries = data;
-        });
+        setInterval(function(){
+            $http.get('/api/repository/log').success(function (data) {
+                $scope.entries = data;
+            });
+        }, 5000);
     }]
 });

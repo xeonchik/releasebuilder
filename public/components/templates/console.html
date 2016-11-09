@@ -2,7 +2,9 @@
   <div class="panel-title">git console</div>
   <div class="panel-container">
     <div class="log">
-      <div class="log-entry" ng-repeat="repository in project.repositories"></div>
+      <div class="log-entry" ng-repeat="entry in entries">
+        <span class="date-time">{{ entry.date_time }}</span> <strong>[{{ entry.repo }}]</strong> {{ entry.msg }}
+      </div>
     </div>
   </div>
 </div>
