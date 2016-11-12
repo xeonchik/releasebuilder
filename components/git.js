@@ -62,8 +62,6 @@ var git = {
 
     info: function (repo, options, callback) {
 
-        logger.log('git branch -v', repo.name);
-
         this._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
             if(!result) {
                 callback(result, output);
