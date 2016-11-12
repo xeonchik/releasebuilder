@@ -16,7 +16,7 @@
 
       <div class="form-group">
         <label for="projectWorkspace">Workspace</label>
-        <div class="label-description">Необходимо указать директорию на сервере, в которой будет производиться работа с проектом (выгрузка репозиториев, операции с git и т.д.)</div>
+        <div class="label-description">You must specify a directory on the server, where will be operations with a project (clone repositories, git operations, etc.)</div>
         <input type="text" class="form-control" id="projectWorkspace" name="projectWorkspace" ng-model="project.workspace" required />
         <div ng-show="ProjectForm.$submitted">
             <div class="form-error" ng-show="ProjectForm.projectWorkspace.$error.required">Enter path to the project workspace</div>

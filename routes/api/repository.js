@@ -3,7 +3,7 @@ var router = express.Router();
 const spawn = require('child_process').spawn;
 
 const fs = require('fs');
-var projects = require('../../components/global');
+var projects = require('../../components/projects_store');
 const git = require('../../components/git');
 
 /* GET home page. */

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var projects = require('../components/global.js');
+var projects = require('../components/projects_store.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var projects = require('../../components/global');
+var projects = require('../../components/projects_store');
 var storage = require('node-persist');
 var sha1 = require('sha1');
 
