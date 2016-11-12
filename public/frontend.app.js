@@ -98,10 +98,8 @@ myApp.controller('ConsoleController', ['$scope', function($scope) {
 myApp.component('consoleComponent', {
     templateUrl: 'components/templates/console.html',
     controller: ['$scope', '$http', function ($scope, $http) {
-        setInterval(function(){
-            $http.get('/api/repository/log').success(function (data) {
-                $scope.entries = data;
-            });
-        }, 5000);
+        $http.get('/api/repository/log').success(function (data) {
+            $scope.entries = data;
+        });
     }]
 });

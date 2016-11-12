@@ -1,5 +1,5 @@
 <h1>ReleaseBuilder</h1>
-<p>Welcome to the automatic branch management system. To start, create or select exist project.</p>
+<p>Welcome to the automatic branch management system. To start, create or select existent project.</p>
 
 <div class="projects-list" ng-if="projects.length">
     <p><strong>Projects</strong></p>
@@ -10,4 +10,4 @@
 
 <br />
 
-<p><button class="btn btn-default" ng-click="changeView('/new-project')">Create your first project!</button></p>
+<p><button class="btn btn-default" ng-click="changeView('/new-project')">{{ project.length == 0 ? "Create your first project!" : "Create project" }}</button></p>

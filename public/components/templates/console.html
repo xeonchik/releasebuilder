@@ -1,6 +1,12 @@
 <div class="footer-panel">
-  <div class="panel-title">git console</div>
-  <div class="panel-container">
+  <div class="panel-title">
+    <span class="title">git console</span>
+    <span class="title-actions">
+      <a>Clear</a>
+      <a>Refresh</a>
+    </span>
+  </div>
+  <div class="panel-container console-display">
     <div class="log">
       <div class="log-entry" ng-repeat="entry in entries">
         <span class="date-time">{{ entry.date_time }}</span> <strong>[{{ entry.repo }}]</strong> {{ entry.msg }}
