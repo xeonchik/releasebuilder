@@ -64,11 +64,20 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
         });
     };
 
+    $scope.toggleRepo = function(repo) {
+        project.repositories.forEach(function(item){
+            item.selected = false;
+        });
+        repo.selected = true;
+        console.info(project);
+    };
+
     angular.forEach(project.repositories, function (item, key) {
         $http.get('/api/repository/info', {params:{projectId: project.id, repositoryName: item.name}}).success(function (data) {
             item.current_commit = data.commit;
             item.last_commit_message = data.message;
             item.current_branch = data.branch;
+            item.branches = data.remote_branches;
         });
     });
 }]);
@@ -91,15 +100,17 @@ myApp.controller('RepositoriesController', ['$scope', '$routeParams', 'ProjectSe
 
 }]);
 
-myApp.controller('ConsoleController', ['$scope', function($scope) {
-    $scope.test = 12323;
-}]);
-
 myApp.component('consoleComponent', {
     templateUrl: 'components/templates/console.html',
     controller: ['$scope', '$http', function ($scope, $http) {
-        $http.get('/api/repository/log').success(function (data) {
-            $scope.entries = data;
-        });
+
+        $scope.refresh = function() {
+            $http.get('/api/repository/log').success(function (data) {
+                $scope.entries = data;
+            });
+        };
+
+        $scope.refresh();
+        setInterval($scope.refresh, 50000);
     }]
 });

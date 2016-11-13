@@ -13,10 +13,24 @@
     </div>
   </div>
 
-  <div class="repository-item" ng-repeat="repository in project.repositories">
+  <div class="repository-item" ng-repeat="repository in project.repositories" ng-click="toggleRepo(repository)" ng-class="{selected: repository.selected}">
     <p class="r-title">{{ repository.name }}</p>
     <div class="r-descr">
     <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>author here</span> <span>{{ repository.current_commit }}</span> <span>{{ repository.last_commit_message }}</span></p>
+    </div>
+    <div class="repository-actions" ng-show="repository.selected">
+      <div class="dropdown">
+        <button class="btn btn-default btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Switch branch
+          <span class="caret"></span>
+        </button>
+        <button class="btn btn-default btn-sm" style="float: right; color: #da0601;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</button>
+        <ul class="dropdown-menu" aria-labelledby="dLabel">
+          <li ng-repeat="branch in repository.branches"><a href="#">{{ branch }}</a></li>
+        </ul>
+      </div>
+
+
     </div>
   </div>
 </div>

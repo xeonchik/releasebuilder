@@ -9,7 +9,7 @@
   <div class="panel-container console-display">
     <div class="log">
       <div class="log-entry" ng-repeat="entry in entries">
-        <span class="date-time">{{ entry.date_time }}</span> <strong>[{{ entry.repo }}]</strong> {{ entry.msg }}
+        <span class="date-time">{{ entry.date_time | date:'HH:mm:ss.sss'}}</span> <strong>[{{ entry.repo }}]</strong> {{ entry.msg }}
       </div>
     </div>
   </div>

@@ -5,7 +5,12 @@ const spawn = require('child_process').spawn;
 const exec = require('child_process').exec;
 const fs = require('fs');
 
+/**
+ * Logger type
+ * @type {{_buffer: Array, log: Function, getEntries: Function, toString: Function}}
+ */
 var logger = {
+
     _buffer: [],
 
     log: function (msg, repo) {
@@ -34,6 +39,11 @@ var logger = {
 
 var git = {
 
+    /**
+     * Fetch from origin
+     * @param repo
+     * @param resultCallback
+     */
     fetch: function (repo, resultCallback) {
         var cwd = repo.path;
         var cmd = 'git fetch';
@@ -49,6 +59,13 @@ var git = {
         });
     },
 
+    /**
+     * Pull changes to remote
+     * @param repo
+     * @param options
+     * @param callback
+     * @returns {*}
+     */
     pull: function (repo, options, callback) {
         var cmd = 'git pull';
 
@@ -60,43 +77,82 @@ var git = {
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
 
+    /**
+     * Get info about repository
+     * @param repo
+     * @param options
+     * @param callback
+     */
     info: function (repo, options, callback) {
 
-        this._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
-            if(!result) {
-                callback(result, output);
-                return;
-            }
+        /* Get info about all branches */
+        var promise = new Promise((resolve, reject) => {
+            git._executeCmd('git branch -a', {cwd: repo.path}, function(result, output) {
+                if(!result) {
+                    reject(output);
+                }
 
-            var matches = output.match(/^\* (.*)\s+([a-f0-9]+) (.*)$/im);
+                var re = /remotes\/origin\/(.*)$/gm;
+                var match;
+                var branches = [];
 
-            if(!matches) {
-                callback(false, "Cannot match branch info");
-                return;
-            }
+                while (match = re.exec(output)) {
+                    branches.push(match[1]);
+                }
 
-            var info = {
-                branch: matches[1],
-                commit: matches[2],
-                message: matches[3]
-            };
+                resolve(branches);
+            });
+        });
 
-            callback(true, info);
+        // Then get info about active branch
+        promise.then( branches => {
+            git._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
+                if(!result) {
+                    callback(result, output);
+                    return;
+                }
+
+                var matches = output.match(/^\* (.*)\s+([a-f0-9]+) (.*)$/im);
+
+                if(!matches) {
+                    callback(false, "Cannot match branch info");
+                    return;
+                }
+
+                var info = {
+                    branch: matches[1],
+                    commit: matches[2],
+                    message: matches[3],
+                    remote_branches: branches
+                };
+
+                callback(true, info);
+            });
         });
     },
 
+    /**
+     * Return Logger object
+     * @returns {{_buffer: Array, log: Function, getEntries: Function, toString: Function}}
+     */
     getLogger: function() {
         return logger;
     },
 
+    /**
+     * Execute git command
+     *
+     * @param cmd
+     * @param options
+     * @param callback
+     * @private
+     */
     _executeCmd: function(cmd, options, callback) {
         exec(cmd, options, function (error, stdout, stderr) {
             if (error) {
-                //txt_log.push(error.stack);
                 callback(false, error);
                 return;
             }
-            //txt_log.push(stdout);
             callback(true, stdout);
         });
     }

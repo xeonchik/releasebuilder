@@ -49,7 +49,8 @@ router.post('/add', function(req, res, next) {
   var result = '';
 
   proc.stdout.on('data', function (data) {
-    result += data;
+      console.info(data);
+      result += data;
   });
 
   proc.stderr.on('data', function (data) {
