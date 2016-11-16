@@ -6,7 +6,7 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 
 /**
- * Logger type
+ * Logger for git operations
  * @type {{_buffer: Array, log: Function, getEntries: Function, toString: Function}}
  */
 var logger = {
@@ -37,6 +37,10 @@ var logger = {
     }
 };
 
+/**
+ * Git API
+ * @type {{fetch: Function, pull: Function, info: Function, getLogger: Function, _executeCmd: Function}}
+ */
 var git = {
 
     /**
@@ -77,6 +81,12 @@ var git = {
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
 
+    switch: function(repo, options, callback) {
+        var cmd = 'git checkout ' + options.branch;
+        logger.log(cmd, repo.name);
+        return this._executeCmd(cmd, {cwd: repo.path}, callback);
+    },
+
     /**
      * Get info about repository
      * @param repo
@@ -97,6 +107,9 @@ var git = {
                 var branches = [];
 
                 while (match = re.exec(output)) {
+                    if(match[1].match(/^HEAD ->.*$/i) != null) {
+                        continue;
+                    }
                     branches.push(match[1]);
                 }
 

@@ -6,6 +6,11 @@ const fs = require('fs');
 var projects = require('../../components/projects_store');
 const git = require('../../components/git');
 
+
+/**
+ * TODO: replace similar logic (checks, gets) into single functions/methods; move "add repo" into model
+ */
+
 /* GET home page. */
 router.post('/add', function(req, res, next) {
   var repoUrl = req.body.url;
@@ -78,7 +83,7 @@ router.get('/log', function (req, res) {
     res.send(git.getLogger().getEntries());
 });
 
-router.get('/fetch', function(req, res, next) {
+router.get('/fetch-all', function(req, res, next) {
     var projectId = req.query.projectId;
     var project = projects.getById(projectId);
 
@@ -96,7 +101,7 @@ router.get('/fetch', function(req, res, next) {
 
 });
 
-router.get('/pull', function(req, res, next) {
+router.get('/pull-all', function(req, res, next) {
     var projectId = req.query.projectId;
     var project = projects.getById(projectId);
 
@@ -137,5 +142,33 @@ router.get('/info', function(req, res, next) {
         res.send(info);
     });
 });
+
+router.get('/switch', function(req, res, next) {
+    var projectId = req.query.projectId;
+    var project = projects.getById(projectId);
+
+    if(!project) {
+        return res.status(404).send("Project not found");
+    }
+
+    var repoisotryName = req.query.repositoryName;
+    var branch = req.query.branch;
+
+    var repo = null;
+    project.repositories.forEach(function (item) {
+        if(item.name == repoisotryName) {
+            repo = item;
+        }
+    });
+
+    if(!repo) {
+        return res.status(404).send("Repository not found");
+    }
+
+    git.switch(repo, {branch: branch}, function(result){
+        res.send(result);
+    });
+});
+
 
 module.exports = router;

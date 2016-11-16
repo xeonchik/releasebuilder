@@ -18,7 +18,7 @@
     <div class="r-descr">
     <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>author here</span> <span>{{ repository.current_commit }}</span> <span>{{ repository.last_commit_message }}</span></p>
     </div>
-    <div class="repository-actions" ng-show="repository.selected">
+    <div class="repository-actions">
       <div class="dropdown">
         <button class="btn btn-default btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Switch branch
@@ -26,7 +26,7 @@
         </button>
         <button class="btn btn-default btn-sm" style="float: right; color: #da0601;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</button>
         <ul class="dropdown-menu" aria-labelledby="dLabel">
-          <li ng-repeat="branch in repository.branches"><a href="#">{{ branch }}</a></li>
+          <li ng-repeat="branch in repository.branches"><a ng-click="switchBranch(repository, branch)">{{ branch }}</a></li>
         </ul>
       </div>
 

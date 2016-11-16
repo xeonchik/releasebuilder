@@ -40,8 +40,8 @@ myApp.controller('NewProjectController', ['$scope', '$http', '$location', functi
 
 }]);
 
-myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService', '$rootScope', '$http', function($scope, $routeParams, ProjectService, $rootScope, $http) {
-  $rootScope.project = ProjectService.getCurrent($routeParams.projectId);
+myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService', 'RepositoryService', '$rootScope', '$http', function($scope, $routeParams, ProjectService, RepositoryService, $rootScope, $http) {
+    $rootScope.project = ProjectService.getCurrent($routeParams.projectId);
     var project = $rootScope.project;
 
     $scope.addRepo = function(repo) {
@@ -53,14 +53,20 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
     };
 
     $scope.fetchAll = function() {
-        $http.get('/api/repository/fetch', { params: { projectId: project.id} }).success(function (data) {
+        $http.get('/api/repository/fetch-all', { params: { projectId: project.id} }).success(function (data) {
 
         });
     };
 
     $scope.pullAll = function() {
-        $http.get('/api/repository/pull', { params: { projectId: project.id} }).success(function (data) {
+        $http.get('/api/repository/pull-all', { params: { projectId: project.id} }).success(function (data) {
 
+        });
+    };
+
+    $scope.switchBranch = function(repository, branch) {
+        $http.get('/api/repository/switch', { params: {projectId: project.id, repositoryName: repository.name, branch: branch}}).success(function(){
+            RepositoryService.refresh(project.id, repository);
         });
     };
 
@@ -69,17 +75,24 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
             item.selected = false;
         });
         repo.selected = true;
-        console.info(project);
     };
 
-    angular.forEach(project.repositories, function (item, key) {
-        $http.get('/api/repository/info', {params:{projectId: project.id, repositoryName: item.name}}).success(function (data) {
-            item.current_commit = data.commit;
-            item.last_commit_message = data.message;
-            item.current_branch = data.branch;
-            item.branches = data.remote_branches;
-        });
+    angular.forEach(project.repositories, function (item) {
+        RepositoryService.refresh(project.id, item);
     });
+}]);
+
+myApp.factory('RepositoryService', ['$rootScope', '$http', function($rootScope, $http) {
+    return {
+        refresh: function (projectId, repository) {
+            $http.get('/api/repository/info', {params:{projectId: projectId, repositoryName: repository.name}}).success(function (data) {
+                repository.current_commit = data.commit;
+                repository.last_commit_message = data.message;
+                repository.current_branch = data.branch;
+                repository.branches = data.remote_branches;
+            });
+        }
+    }
 }]);
 
 myApp.factory('ProjectService', ['$rootScope', function($rootScope){
