@@ -70,6 +70,10 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
         });
     };
 
+    $scope.removeRepo = function(repository) {
+        $http.get('/api/repository/remove', { params: { projectId: project.id, repositoryName: repository.name } } )
+    };
+
     $scope.toggleRepo = function(repo) {
         project.repositories.forEach(function(item){
             item.selected = false;

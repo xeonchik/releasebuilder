@@ -11,7 +11,7 @@ const git = require('../../components/git');
  * TODO: replace similar logic (checks, gets) into single functions/methods; move "add repo" into model
  */
 
-/* GET home page. */
+/** TODO: rewrite this controller (it is wrong to use exec/spawn in controller) */
 router.post('/add', function(req, res, next) {
   var repoUrl = req.body.url;
   var projectId = req.body.projectId;
@@ -84,12 +84,13 @@ router.get('/log', function (req, res) {
 });
 
 router.get('/fetch-all', function(req, res, next) {
-    var projectId = req.query.projectId;
-    var project = projects.getById(projectId);
-
-    if(!project) {
-        return res.status(404).send("Project not found");
+    try {
+        var objects = objectInitilizer(['project'], req);
+    } catch (e) {
+        return res.status(404).send(e);
     }
+
+    var project = objects.project;
 
     project.repositories.forEach(function (repo) {
         git.fetch(repo, function (result, response) {
@@ -102,12 +103,13 @@ router.get('/fetch-all', function(req, res, next) {
 });
 
 router.get('/pull-all', function(req, res, next) {
-    var projectId = req.query.projectId;
-    var project = projects.getById(projectId);
-
-    if(!project) {
-        return res.status(404).send("Project not found");
+    try {
+        var objects = objectInitilizer(['project'], req);
+    } catch (e) {
+        return res.status(404).send(e);
     }
+
+    var project = objects.project;
 
     project.repositories.forEach(function (repo) {
         git.pull(repo, null,function (result, response) {
@@ -119,56 +121,81 @@ router.get('/pull-all', function(req, res, next) {
 });
 
 router.get('/info', function(req, res, next) {
-    var projectId = req.query.projectId;
-    var project = projects.getById(projectId);
-
-    if(!project) {
-        return res.status(404).send("Project not found");
+    try {
+        var objects = objectInitilizer(['project', 'repository'], req);
+    } catch (e) {
+        return res.status(404).send(e);
     }
 
-    var repoisotryName = req.query.repositoryName;
-    var repo = null;
-    project.repositories.forEach(function (item) {
-        if(item.name == repoisotryName) {
-            repo = item;
-        }
-    });
-
-    if(!repo) {
-        return res.status(404).send("Repository not found");
-    }
-
-    git.info(repo, {}, function (result, info) {
+    git.info(objects.repository, {}, function (result, info) {
         res.send(info);
     });
 });
 
-router.get('/switch', function(req, res, next) {
-    var projectId = req.query.projectId;
-    var project = projects.getById(projectId);
-
-    if(!project) {
-        return res.status(404).send("Project not found");
+router.get('/remove', function(req, res, next) {
+    try {
+        var objects = objectInitilizer(['project', 'repository'], req);
+    } catch (e) {
+        return res.status(404).send(e);
     }
+    console.info(objects);
+    return res.send("Ok");
+});
 
-    var repoisotryName = req.query.repositoryName;
+router.get('/switch', function(req, res, next) {
+    try {
+        var objects = objectInitilizer(['project', 'repository'], req);
+    } catch (e) {
+        return res.status(404).send(e);
+    }
     var branch = req.query.branch;
 
-    var repo = null;
-    project.repositories.forEach(function (item) {
-        if(item.name == repoisotryName) {
-            repo = item;
-        }
-    });
-
-    if(!repo) {
-        return res.status(404).send("Repository not found");
-    }
-
-    git.switch(repo, {branch: branch}, function(result){
+    git.switch(objects.repository, {branch: branch}, function(result){
         res.send(result);
     });
 });
 
+/**
+ * Object initilizer and error handling
+ * Can be used for initilize object from query params
+ *
+ * @param objects_aliases
+ * @param request
+ */
+function objectInitilizer(objects_aliases, request)
+{
+    if(request == undefined) {
+        throw "Request object is undefined";
+    }
+
+    var objects = {};
+
+    objects_aliases.forEach(function(alias){
+        switch (alias) {
+            case 'project':
+                var project = projects.getById(request.query.projectId);
+                if (!project) { throw "Project not found" }
+                objects.project = project;
+                break;
+            case 'repository':
+                var name = request.query.repositoryName;
+                var repo = null;
+                var project = objects.project;
+
+                project.repositories.forEach(function (item) {
+                    if(item.name == name) {
+                        repo = item;
+                    }
+                });
+                if(!repo) { throw "Repository not found" }
+                objects.repository = repo;
+                break;
+            default:
+                break;
+        }
+    });
+
+    return objects;
+}
 
 module.exports = router;
