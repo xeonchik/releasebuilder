@@ -8,7 +8,14 @@
       <button type="button" class="btn btn-default" ng-click="fetchAll()" ><span class="glyphicon glyphicon-download"></span> Fetch all</button>
       <button type="button" class="btn btn-default" ng-click="pullAll()"><span class="glyphicon glyphicon-save"></span> Pull all</button>
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-open"></span> Push all</button>
-      <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share-alt"></span> Checkout branch</button>
+
+      <div class="btn-group">
+      <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-share-alt"></span> Checkout branch</button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="branch in getCommonBranches()"><a>123123</a></li>
+      </ul>
+      </div>
+
       <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create branch</button>
     </div>
   </div>
@@ -20,7 +27,7 @@
     </div>
     <div class="repository-actions">
       <div class="dropdown">
-        <button class="btn btn-default btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-default btn-sm" data-toggle="dropdown">
           Switch branch
           <span class="caret"></span>
         </button>

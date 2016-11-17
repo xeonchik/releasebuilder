@@ -73,7 +73,7 @@ var git = {
     pull: function (repo, options, callback) {
         var cmd = 'git pull';
 
-        if(options.branch) {
+        if(options && options.branch) {
             cmd += ' origin ' + options.branch + ' --progress';
         }
 

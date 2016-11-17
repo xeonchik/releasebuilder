@@ -77,6 +77,19 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
         repo.selected = true;
     };
 
+    $scope.getCommonBranches = function (){
+        var common_branches = [];
+
+        project.repositories.forEach(function (repo) {
+            if(common_branches.length == 0) {
+                common_branches = repo.branches.slice();
+                console.info(repo);
+            }
+        });
+
+        return common_branches;
+    };
+
     angular.forEach(project.repositories, function (item) {
         RepositoryService.refresh(project.id, item);
     });

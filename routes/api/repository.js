@@ -110,7 +110,7 @@ router.get('/pull-all', function(req, res, next) {
     }
 
     project.repositories.forEach(function (repo) {
-        git.pull(repo, {branch: "master"}, function (result, response) {
+        git.pull(repo, null,function (result, response) {
             console.info("Pull result: " + result);
         });
     });
