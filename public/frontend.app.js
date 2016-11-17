@@ -40,64 +40,7 @@ myApp.controller('NewProjectController', ['$scope', '$http', '$location', functi
 
 }]);
 
-myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService', 'RepositoryService', '$rootScope', '$http', function($scope, $routeParams, ProjectService, RepositoryService, $rootScope, $http) {
-    $rootScope.project = ProjectService.getCurrent($routeParams.projectId);
-    var project = $rootScope.project;
 
-    $scope.addRepo = function(repo) {
-        $http.post('/api/repository/add', {url: repo.url, projectId: $rootScope.project.id}).success(function (data) {
-            if(data.result == true) {
-                $('#myModal').modal('hide');
-            }
-        });
-    };
-
-    $scope.fetchAll = function() {
-        $http.get('/api/repository/fetch-all', { params: { projectId: project.id} }).success(function (data) {
-
-        });
-    };
-
-    $scope.pullAll = function() {
-        $http.get('/api/repository/pull-all', { params: { projectId: project.id} }).success(function (data) {
-
-        });
-    };
-
-    $scope.switchBranch = function(repository, branch) {
-        $http.get('/api/repository/switch', { params: {projectId: project.id, repositoryName: repository.name, branch: branch}}).success(function(){
-            RepositoryService.refresh(project.id, repository);
-        });
-    };
-
-    $scope.removeRepo = function(repository) {
-        $http.get('/api/repository/remove', { params: { projectId: project.id, repositoryName: repository.name } } )
-    };
-
-    $scope.toggleRepo = function(repo) {
-        project.repositories.forEach(function(item){
-            item.selected = false;
-        });
-        repo.selected = true;
-    };
-
-    $scope.getCommonBranches = function (){
-        var common_branches = [];
-
-        project.repositories.forEach(function (repo) {
-            if(common_branches.length == 0) {
-                common_branches = repo.branches.slice();
-                console.info(repo);
-            }
-        });
-
-        return common_branches;
-    };
-
-    angular.forEach(project.repositories, function (item) {
-        RepositoryService.refresh(project.id, item);
-    });
-}]);
 
 myApp.factory('RepositoryService', ['$rootScope', '$http', function($rootScope, $http) {
     return {
@@ -112,18 +55,30 @@ myApp.factory('RepositoryService', ['$rootScope', '$http', function($rootScope, 
     }
 }]);
 
-myApp.factory('ProjectService', ['$rootScope', function($rootScope){
-  return {
-    getCurrent: function(projectId) {
-      var result = undefined;
-      angular.forEach(this.projects, function(value, key){
-        if(projectId == value.id) {
-          result = value;
+myApp.factory('ProjectService', ['$rootScope', '$http', function($rootScope, $http){
+    return {
+        /**
+         * Refresh projects from remote
+         */
+        refresh: function() {
+            $http.get('/api/project/list').success(function (data) {
+                $rootScope.projects = data;
+                //this.projects = data;
+            });
+        },
+        /**
+         * Get project by id (todo: rename it)
+         */
+        getCurrent: function(projectId) {
+            var result = undefined;
+            $rootScope.projects.forEach(function(value){
+                if(projectId == value.id) {
+                    result = value;
+                }
+            });
+            return result;
         }
-      });
-      return result;
-    }
-  };
+    };
 }]);
 
 myApp.controller('RepositoriesController', ['$scope', '$routeParams', 'ProjectService', '$rootScope', function($scope, $routeParams, ProjectService, $rootScope) {

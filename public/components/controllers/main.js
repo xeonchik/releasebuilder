@@ -7,10 +7,12 @@ myApp.controller('MainController', ['$scope', '$location', '$http', 'ProjectServ
         $location.path(view);
     };
 
-    $http.get('/api/project/list').success(function (data) {
-        $scope.projects = data;
-        ProjectService.projects = data;
-    });
+    ProjectService.refresh();
+
+    //$http.get('/api/project/list').success(function (data) {
+    //    $scope.projects = data;
+    //    ProjectService.projects = data;
+    //});
 
     $scope.selectProject = function (selected) {
         ProjectService.select = selected;

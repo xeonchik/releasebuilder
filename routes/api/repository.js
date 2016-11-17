@@ -2,15 +2,12 @@ var express = require('express');
 var router = express.Router();
 const spawn = require('child_process').spawn;
 
-const fs = require('fs');
+const fs = require('fs-extra');
 var projects = require('../../components/projects_store');
 const git = require('../../components/git');
 
 
-/**
- * TODO: replace similar logic (checks, gets) into single functions/methods; move "add repo" into model
- */
-
+/** TODO: move "add repo" into model */
 /** TODO: rewrite this controller (it is wrong to use exec/spawn in controller) */
 router.post('/add', function(req, res, next) {
   var repoUrl = req.body.url;
@@ -79,10 +76,16 @@ router.post('/add', function(req, res, next) {
   });
 });
 
+/**
+ * Get git console logger data
+ */
 router.get('/log', function (req, res) {
     res.send(git.getLogger().getEntries());
 });
 
+/**
+ * Sync local copy of repository with remote
+ */
 router.get('/fetch-all', function(req, res, next) {
     try {
         var objects = objectInitializer(['project'], req);
@@ -102,6 +105,9 @@ router.get('/fetch-all', function(req, res, next) {
 
 });
 
+/**
+ * Pull changes from remote branch
+ */
 router.get('/pull-all', function(req, res, next) {
     try {
         var objects = objectInitializer(['project'], req);
@@ -120,6 +126,9 @@ router.get('/pull-all', function(req, res, next) {
     res.send({result: true});
 });
 
+/**
+ * Fetch info about repository
+ */
 router.get('/info', function(req, res, next) {
     try {
         var objects = objectInitializer(['project', 'repository'], req);
@@ -132,16 +141,32 @@ router.get('/info', function(req, res, next) {
     });
 });
 
+/**
+ * Remove repository work copy
+ */
 router.get('/remove', function(req, res, next) {
     try {
         var objects = objectInitializer(['project', 'repository'], req);
     } catch (e) {
         return res.status(404).send(e);
     }
-    console.info(objects);
-    return res.send("Ok");
+
+    fs.remove(objects.repository.path, (err) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        var index = objects.project.repositories.indexOf(objects.repository);
+        objects.project.repositories.splice(index, 1);
+        projects.persist();
+
+        res.send({result: true});
+    });
 });
 
+/**
+ * Switch branch of repository
+ */
 router.get('/switch', function(req, res, next) {
     try {
         var objects = objectInitializer(['project', 'repository'], req);
