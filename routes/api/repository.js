@@ -85,7 +85,7 @@ router.get('/log', function (req, res) {
 
 router.get('/fetch-all', function(req, res, next) {
     try {
-        var objects = objectInitilizer(['project'], req);
+        var objects = objectInitializer(['project'], req);
     } catch (e) {
         return res.status(404).send(e);
     }
@@ -104,7 +104,7 @@ router.get('/fetch-all', function(req, res, next) {
 
 router.get('/pull-all', function(req, res, next) {
     try {
-        var objects = objectInitilizer(['project'], req);
+        var objects = objectInitializer(['project'], req);
     } catch (e) {
         return res.status(404).send(e);
     }
@@ -122,7 +122,7 @@ router.get('/pull-all', function(req, res, next) {
 
 router.get('/info', function(req, res, next) {
     try {
-        var objects = objectInitilizer(['project', 'repository'], req);
+        var objects = objectInitializer(['project', 'repository'], req);
     } catch (e) {
         return res.status(404).send(e);
     }
@@ -134,7 +134,7 @@ router.get('/info', function(req, res, next) {
 
 router.get('/remove', function(req, res, next) {
     try {
-        var objects = objectInitilizer(['project', 'repository'], req);
+        var objects = objectInitializer(['project', 'repository'], req);
     } catch (e) {
         return res.status(404).send(e);
     }
@@ -144,7 +144,7 @@ router.get('/remove', function(req, res, next) {
 
 router.get('/switch', function(req, res, next) {
     try {
-        var objects = objectInitilizer(['project', 'repository'], req);
+        var objects = objectInitializer(['project', 'repository'], req);
     } catch (e) {
         return res.status(404).send(e);
     }
@@ -156,13 +156,13 @@ router.get('/switch', function(req, res, next) {
 });
 
 /**
- * Object initilizer and error handling
- * Can be used for initilize object from query params
+ * Object initializer and error handling
+ * Can be used for initialize object from query params
  *
  * @param objects_aliases
  * @param request
  */
-function objectInitilizer(objects_aliases, request)
+function objectInitializer(objects_aliases, request)
 {
     if(request == undefined) {
         throw "Request object is undefined";
