@@ -21,8 +21,8 @@ router.post('/save', function(req, res, next) {
             duplicateError = true;
         }
     });
-    if(duplicateError) {
-        res.send({error: "Проект с таким именем или путем уже существует."});
+    if (duplicateError) {
+        res.send({error: "Project with the same name or path already exists."});
         return;
     }
 

@@ -5,14 +5,22 @@
 myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService', 'RepositoryService', '$rootScope', '$http', function($scope, $routeParams, ProjectService, RepositoryService, $rootScope, $http) {
     $rootScope.project = ProjectService.getCurrent($routeParams.projectId);
     var project = $rootScope.project;
+    $scope.cloning_process = false;
 
     $scope.addRepo = function(repo) {
+        $scope.cloning_process = true;
+
         $http.post('/api/repository/add', {url: repo.url, projectId: $rootScope.project.id}).success(function (data) {
             if(data.result == true) {
-                $('#myModal').modal('hide');
+                $('#addRepositoryModal').modal('hide');
                 ProjectService.refresh();
                 project = ProjectService.getCurrent($routeParams.projectId);
                 $rootScope.project = project;
+
+                $scope.cloning_process = false;
+            } else {
+                $scope.clone_error = data.error;
+                $scope.cloning_process = false;
             }
         });
     };

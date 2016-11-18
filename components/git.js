@@ -98,7 +98,7 @@ var git = {
         /* Get info about all branches */
         var promise = new Promise((resolve, reject) => {
             git._executeCmd('git branch -a', {cwd: repo.path}, function(result, output) {
-                if(!result) {
+                if (!result) {
                     reject(output);
                 }
 
@@ -120,14 +120,14 @@ var git = {
         // Then get info about active branch
         promise.then( branches => {
             git._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
-                if(!result) {
+                if (!result) {
                     callback(result, output);
                     return;
                 }
 
                 var matches = output.match(/^\* (.*)\s+([a-f0-9]+) (.*)$/im);
 
-                if(!matches) {
+                if (!matches) {
                     callback(false, "Cannot match branch info");
                     return;
                 }

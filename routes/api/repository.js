@@ -19,15 +19,15 @@ router.post('/add', function(req, res, next) {
 
   var matches = repoUrl.match(/\/([a-zA-Z0-9_-]+)\.git/i)
 
-  if(!matches) {
-    return res.send({error: "Не удалось определить название репозитория."});
+  if (!matches) {
+    return res.send({error: "Cannot detect git repository name. May be URL is wrong."});
   }
 
   var repoName = matches[1];
 
   var project = projects.getById(projectId);
 
-  if(project.repositories == undefined) {
+  if (project.repositories == undefined) {
     project.repositories = [];
   }
 
@@ -38,8 +38,8 @@ router.post('/add', function(req, res, next) {
     }
   });
 
-  if(duplicate) {
-    return res.send({error: "Репозиторий уже добавлен."});
+  if (duplicate) {
+    return res.send({error: "Repository already added."});
   }
 
   var cwd = project.workspacePath;
@@ -60,7 +60,7 @@ router.post('/add', function(req, res, next) {
   });
 
   proc.on('exit', function(code) {
-    if(code == 0) {
+    if (code == 0) {
       res.send({result: true});
 
       project.repositories.push({
