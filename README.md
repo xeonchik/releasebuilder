@@ -24,7 +24,6 @@ It's tested with environment
 
 ```sh
 $ npm install
-$ bower install
 ```
 
 ## Get it started!
