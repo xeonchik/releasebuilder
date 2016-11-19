@@ -79,6 +79,25 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
         return result;
     };
 
+    $scope.createCommonBranch = function(newBranchName) {
+        if(newBranchName == undefined) {
+            return;
+        }
+
+        angular.forEach(project.repositories, function (repository) {
+            $http.get(
+                '/api/repository/branch',
+                {
+                    params: {projectId: project.id, repositoryName: repository.name, branch: newBranchName}
+                })
+                .success(function(data){
+                    $scope.switchBranch(repository, newBranchName);
+                });
+        });
+
+        $('#createBranchModal').modal('hide');
+    };
+
     angular.forEach(project.repositories, function (item) {
         RepositoryService.refresh(project.id, item);
     });

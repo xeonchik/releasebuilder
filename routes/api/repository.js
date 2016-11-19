@@ -165,6 +165,27 @@ router.get('/remove', function(req, res, next) {
 });
 
 /**
+ * Create new branch
+ */
+router.get('/branch', function(req, res, next) {
+    try {
+        var objects = objectInitializer(['project', 'repository'], req);
+    } catch (e) {
+        return res.status(404).send(e);
+    }
+
+    var branch = req.query.branch;
+
+    git.branch(objects.repository, {branch: branch}, function (result, error){
+        if(!result) {
+            return res.status(500).send({error: error});
+        }
+
+        res.send(result);
+    });
+});
+
+/**
  * Switch branch of repository
  */
 router.get('/switch', function(req, res, next) {
@@ -175,8 +196,12 @@ router.get('/switch', function(req, res, next) {
     }
     var branch = req.query.branch;
 
-    git.switch(objects.repository, {branch: branch}, function(result){
-        res.send(result);
+    git.switch(objects.repository, {branch: branch}, function(result, error){
+        if(!result) {
+            return res.status(500).send({error: error});
+        }
+
+        res.send({result: true});
     });
 });
 

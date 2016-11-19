@@ -87,6 +87,13 @@ var git = {
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
 
+    branch: function(repo, options, callback) {
+        console.info(repo);
+        var cmd = 'git branch ' + options.branch;
+        logger.log(cmd, repo.name);
+        return this._executeCmd(cmd, {cwd: repo.path}, callback);
+    },
+
     /**
      * Get info about repository
      * @param repo
