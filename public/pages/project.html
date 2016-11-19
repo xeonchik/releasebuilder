@@ -12,11 +12,15 @@
       <div class="btn-group">
       <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-share-alt"></span> Checkout branch</button>
       <ul class="dropdown-menu">
-        <li ng-repeat="branch in getCommonBranches()"><a>{{ branch }}</a></li>
+        <li ng-repeat="branch in getCommonBranches()"><a ng-click="checkoutCommon(branch)">{{ branch }}</a></li>
       </ul>
       </div>
 
-      <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Create branch</button>
+      <button id="createCommonBranchButton" type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus"></span> Create branch
+      </button>
+
+
     </div>
   </div>
 
@@ -35,20 +39,21 @@
           <li ng-repeat="branch in repository.branches"><a ng-click="switchBranch(repository, branch)">{{ branch }}</a></li>
         </ul>
         <button class="btn btn-default btn-sm">Reset Head</button>
-
-
         <button class="btn btn-default btn-sm" style="float: right; color: #da0601;" ng-click="removeRepo(repository)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</button>
-
       </div>
-
-
     </div>
   </div>
 </div>
 <br/>
 
-
 <!-- Modal -->
+<style type="text/css">
+  .modal-loader {
+    padding: 25px 0;
+    font-size: 1.4em;
+    text-align: center;
+  }
+</style>
 <div class="modal fade" id="addRepositoryModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -83,10 +88,3 @@
 </div>
 
 
-<style type="text/css">
-  .modal-loader {
-    padding: 25px 0;
-    font-size: 1.4em;
-    text-align: center;
-  }
-</style>

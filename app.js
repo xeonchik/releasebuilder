@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var api_project = require('./routes/api/project');
 var api_repository = require('./routes/api/repository');
 
@@ -31,7 +30,6 @@ app.use(require('node-sass-middleware')({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/api/project', api_project);
 app.use('/api/repository', api_repository);
 

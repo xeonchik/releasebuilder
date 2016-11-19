@@ -9,6 +9,7 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
 
     $scope.addRepo = function(repo) {
         $scope.cloning_process = true;
+        $scope.clone_error = false;
 
         $http.post('/api/repository/add', {url: repo.url, projectId: $rootScope.project.id}).success(function (data) {
             if(data.result == true) {
@@ -22,6 +23,14 @@ myApp.controller('ProjectController', ['$scope', '$routeParams', 'ProjectService
                 $scope.clone_error = data.error;
                 $scope.cloning_process = false;
             }
+        });
+    };
+
+    $scope.checkoutCommon = function(branch) {
+        angular.forEach(project.repositories, function(repository){
+            $http.get('/api/repository/switch', { params: {projectId: project.id, repositoryName: repository.name, branch: branch}}).success(function(){
+                RepositoryService.refresh(project.id, repository);
+            });
         });
     };
 
