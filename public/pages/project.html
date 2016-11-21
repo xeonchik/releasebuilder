@@ -23,7 +23,9 @@
   <div class="repository-item" ng-repeat="repository in project.repositories" ng-click="toggleRepo(repository)" ng-class="{selected: repository.selected}">
     <p class="r-title">{{ repository.name }}</p>
     <div class="r-descr">
-    <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>{{ repository.commit_date }}</span> <span>{{ repository.commit_author }}</span> <span>{{ repository.current_commit }}</span> <span>{{ repository.last_commit_message }}</span></p>
+      <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>{{ repository.commit_date }}</span> <span>{{ repository.commit_author }}</span> <span>{{ repository.current_commit }}</span></p>
+      <p><span>{{ repository.last_commit_message }}</span></p>
+      <p><span style="color: green; text-decoration: underline;">Waiting for 4 commits to be pushed</span> <span style="color: #ba0000; text-decoration: underline;">Remote is behind 4 commits!</span></p>
     </div>
     <div class="repository-actions">
       <div class="dropdown">
@@ -39,7 +41,7 @@
         <button class="btn btn-default btn-sm">Reset</button>
 
 
-        <button class="btn btn-default btn-sm" style="float: right; color: #da0601;" ng-click="removeRepo(repository)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</button>
+        <button class="btn btn-default btn-sm" style="float: right; color: #da0601;" ng-click="removeRepo(repository)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
       </div>
     </div>
   </div>
@@ -67,7 +69,6 @@
             <label for="gitAddress">Git repository URL</label>
             <input type="text" class="form-control" id="gitAddress" name="gitAddress" ng-model="repo.url" required />
             <div ng-show="RepositoryAddForm.$submitted">
-
               <div class="form-error" ng-show="RepositoryAddForm.gitAddress.$error.required">Enter path to the project workspace</div>
             </div>
           </div>
@@ -75,7 +76,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary" ng-click="RepositoryAddForm.$valid && addRepo(repo)">Save</button>
+        <button type="submit" class="btn btn-primary" ng-click="addRepo(repo)">Save</button>
       </div>
     </div>
   </div>
