@@ -49,6 +49,8 @@ myApp.factory('RepositoryService', ['$rootScope', '$http', function($rootScope, 
                 repository.current_commit = data.commit;
                 repository.last_commit_message = data.message;
                 repository.current_branch = data.branch;
+                repository.commit_author = data.commit_author;
+                repository.commit_date = data.commit_date;
                 repository.branches = data.remote_branches;
             });
         }

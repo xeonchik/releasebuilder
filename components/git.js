@@ -103,52 +103,81 @@ var git = {
     info: function (repo, options, callback) {
 
         /* Get info about all branches */
-        var promise = new Promise((resolve, reject) => {
-            git._executeCmd('git branch -a', {cwd: repo.path}, function(result, output) {
-                if (!result) {
-                    reject(output);
-                }
-
-                var re = /remotes\/origin\/(.*)$/gm;
-                var match;
-                var branches = [];
-
-                while (match = re.exec(output)) {
-                    if(match[1].match(/^HEAD ->.*$/i) != null) {
-                        continue;
+        new Promise(
+            (resolve, reject) => {
+                git._executeCmd('git branch -a', {cwd: repo.path}, function(result, output) {
+                    if (!result) {
+                        reject(output);
                     }
-                    branches.push(match[1]);
-                }
 
-                resolve(branches);
+                    var re = /^\*?\s+(.+)$/gm;
+                    var match;
+                    var branches = [];
+
+                    while (match = re.exec(output)) {
+                        if(match[1].match(/^remotes\/.*\/HEAD ->.*$/i) != null) {
+                            continue;
+                        }
+                        branches.push(match[1]);
+                    }
+
+                    resolve(branches);
+                });
+            }).then( branches => {
+            return new Promise((resolve, reject) => {
+                    git._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
+                        if (!result) {
+                            reject(output);
+                            return;
+                        }
+
+                        var matches = output.match(/^\* (.*)\s+([a-f0-9]{7}) (.*)$/im);
+
+                        if (!matches) {
+                            reject("Cannot match branch info");
+                            return;
+                        }
+
+                        var info = {
+                            branch: matches[1],
+                            commit: matches[2],
+                            message: matches[3],
+                            remote_branches: branches
+                        };
+
+                        resolve(info);
+                    });
+                });
+            }).then( info => {
+                return new Promise((resolve, reject) => {
+                    git._executeCmd('git show --summary', {cwd: repo.path}, (result, output) => {
+                        if (!result) {
+                            reject(output);
+                        }
+
+                        var commit = /commit ([a-f0-9]+)/gm.exec(output);
+                        if (commit) {
+                            info.commit_hash = commit[1];
+                        }
+
+                        var author = /^Author: (.+)$/gm.exec(output);
+                        if (author) {
+                            info.commit_author = author[1];
+                        }
+
+                        var date = /^Date:\s+(.+)$/gm.exec(output);
+                        if (author) {
+                            info.commit_date = date[1];
+                        }
+
+                        resolve(info);
+                    });
+                });
+            }).then( result => {
+                callback(true, result);
+            }).catch( result => {
+                callback(false, result);
             });
-        });
-
-        // Then get info about active branch
-        promise.then( branches => {
-            git._executeCmd('git branch -v', {cwd: repo.path}, function (result, output) {
-                if (!result) {
-                    callback(result, output);
-                    return;
-                }
-
-                var matches = output.match(/^\* (.*)\s+([a-f0-9]+) (.*)$/im);
-
-                if (!matches) {
-                    callback(false, "Cannot match branch info");
-                    return;
-                }
-
-                var info = {
-                    branch: matches[1],
-                    commit: matches[2],
-                    message: matches[3],
-                    remote_branches: branches
-                };
-
-                callback(true, info);
-            });
-        });
     },
 
     /**

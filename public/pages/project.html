@@ -23,7 +23,7 @@
   <div class="repository-item" ng-repeat="repository in project.repositories" ng-click="toggleRepo(repository)" ng-class="{selected: repository.selected}">
     <p class="r-title">{{ repository.name }}</p>
     <div class="r-descr">
-    <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>author here</span> <span>{{ repository.current_commit }}</span> <span>{{ repository.last_commit_message }}</span></p>
+    <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>{{ repository.commit_date }}</span> <span>{{ repository.commit_author }}</span> <span>{{ repository.current_commit }}</span> <span>{{ repository.last_commit_message }}</span></p>
     </div>
     <div class="repository-actions">
       <div class="dropdown">
