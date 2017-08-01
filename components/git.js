@@ -9,12 +9,12 @@ const fs = require('fs');
  * Logger for git operations
  * @type {{_buffer: Array, log: Function, getEntries: Function, toString: Function}}
  */
-var logger = {
+let logger = {
 
     _buffer: [],
 
     log: function (msg, repo) {
-        var entry = {
+        let entry = {
             msg: msg,
             date_time: new Date(),
             level: 'info',
@@ -29,7 +29,7 @@ var logger = {
     },
 
     toString: function () {
-        var output = '';
+        let output = '';
         this._buffer.forEach(function(item) {
             output += item.date_time.toLocaleTimeString() + '.' + item.date_time.getMilliseconds() + ': ' + item.msg + "\n";
         });
@@ -39,9 +39,9 @@ var logger = {
 
 /**
  * Git API
- * @type {{fetch: Function, pull: Function, info: Function, getLogger: Function, _executeCmd: Function}}
+ * @type {{fetch: git.fetch, pull: git.pull, switch: git.switch, branch: git.branch, info: git.info, getLogger: git.getLogger, _executeCmd: git._executeCmd}}
  */
-var git = {
+let git = {
 
     /**
      * Fetch from origin
@@ -49,8 +49,8 @@ var git = {
      * @param resultCallback
      */
     fetch: function (repo, resultCallback) {
-        var cwd = repo.path;
-        var cmd = 'git fetch';
+        let cwd = repo.path;
+        let cmd = 'git fetch';
 
         logger.log(cmd, repo.name);
 
@@ -71,7 +71,7 @@ var git = {
      * @returns {*}
      */
     pull: function (repo, options, callback) {
-        var cmd = 'git pull';
+        let cmd = 'git pull';
 
         if(options && options.branch) {
             cmd += ' origin ' + options.branch + ' --progress';
@@ -81,15 +81,28 @@ var git = {
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
 
+    /**
+     * Switch repository to another branch
+     * @param repo
+     * @param options
+     * @param callback
+     * @returns {*}
+     */
     switch: function(repo, options, callback) {
-        var cmd = 'git checkout ' + options.branch;
+        let cmd = 'git checkout ' + options.branch;
         logger.log(cmd, repo.name);
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
 
+    /**
+     * Create a new branch
+     * @param repo
+     * @param options
+     * @param callback
+     * @returns {*}
+     */
     branch: function(repo, options, callback) {
-        console.info(repo);
-        var cmd = 'git branch ' + options.branch;
+        let cmd = 'git branch ' + options.branch;
         logger.log(cmd, repo.name);
         return this._executeCmd(cmd, {cwd: repo.path}, callback);
     },
@@ -110,9 +123,9 @@ var git = {
                         reject(output);
                     }
 
-                    var re = /^\*?\s+(.+)$/gm;
-                    var match;
-                    var branches = [];
+                    let re = /^\*?\s+(.+)$/gm;
+                    let match;
+                    let branches = [];
 
                     while (match = re.exec(output)) {
                         if(match[1].match(/^remotes\/.*\/HEAD ->.*$/i) != null) {
@@ -131,14 +144,14 @@ var git = {
                             return;
                         }
 
-                        var matches = output.match(/^\* (.*)\s+([a-f0-9]{7}) (.*)$/im);
+                        let matches = output.match(/^\* (.*)\s+([a-f0-9]{7}) (.*)$/im);
 
                         if (!matches) {
                             reject("Cannot match branch info");
                             return;
                         }
 
-                        var info = {
+                        let info = {
                             branch: matches[1],
                             commit: matches[2],
                             message: matches[3],
@@ -155,17 +168,17 @@ var git = {
                             reject(output);
                         }
 
-                        var commit = /commit ([a-f0-9]+)/gm.exec(output);
+                        let commit = /commit ([a-f0-9]+)/gm.exec(output);
                         if (commit) {
                             info.commit_hash = commit[1];
                         }
 
-                        var author = /^Author: (.+)$/gm.exec(output);
+                        let author = /^Author: (.+)$/gm.exec(output);
                         if (author) {
                             info.commit_author = author[1];
                         }
 
-                        var date = /^Date:\s+(.+)$/gm.exec(output);
+                        let date = /^Date:\s+(.+)$/gm.exec(output);
                         if (author) {
                             info.commit_date = date[1];
                         }

@@ -25,7 +25,7 @@
     <div class="r-descr">
       <p class="branch-info"><strong>Branch:</strong> {{ repository.current_branch }} <span>{{ repository.commit_date }}</span> <span>{{ repository.commit_author }}</span> <span>{{ repository.current_commit }}</span></p>
       <p><span>{{ repository.last_commit_message }}</span></p>
-      <p><span style="color: green; text-decoration: underline;">Waiting for 4 commits to be pushed</span> <span style="color: #ba0000; text-decoration: underline;">Remote is behind 4 commits!</span></p>
+      <p style="display: none;"><span style="color: green; text-decoration: underline;">Waiting for 4 commits to be pushed</span> <span style="color: #ba0000; text-decoration: underline;">Remote is behind 4 commits!</span></p>
     </div>
     <div class="repository-actions">
       <div class="dropdown">
